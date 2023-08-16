@@ -1,0 +1,50 @@
+{
+	"name": "http",
+	"path": "{CONFIGURATION_FOLDER}",
+	"loads":
+	[
+		"A2FCGI",
+		"A2Session",
+		"A2Sessions"
+	],
+	"actors":
+	[
+		{
+			"type": "A2FCGI",
+			"name": "fcgi",
+			"share": true,
+			"data":
+			{
+				"cookie":
+				{
+					"maxage": 604800
+				},
+				"alloworigin": true
+			}
+		},
+		{
+			"type": "A2Sessions",
+			"name": "sessions",
+			"share": true,
+			"data":
+			{
+				"auth_server": "/"
+			}
+		}
+	],
+	"db":
+	[
+		{
+			"database" :
+			{
+				"dbname" : "tegia_core",
+				"host" : "{MYSQL_HOST}",
+				"password" : "{MYSQL_PASSWORD}",
+				"port" : {MYSQL_PORT},
+				"user" : "{MYSQL_USER}"
+			},
+			"max_connections" : 10,
+			"name" : "core"
+		}
+	]
+}

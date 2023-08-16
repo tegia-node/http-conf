@@ -1,0 +1,13 @@
+.vscode
+
+/bin/*.o
+/bin/*.so
+/bin/*.deb
+/bin/http.config.json
+
+/deb/tegia-http/etc/tegia/http/bin/*.so
+/deb/tegia-http/etc/tegia/http/bin/*.json
+/deb/tegia-http/etc/tegia/http/db/*.sql
+/deb/*.deb
+
+/vendors
