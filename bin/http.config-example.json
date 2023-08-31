@@ -15,11 +15,7 @@
 			"share": true,
 			"data":
 			{
-				"cookie":
-				{
-					"maxage": 604800
-				},
-				"alloworigin": true
+
 			}
 		},
 		{
@@ -43,7 +39,6 @@
 				"port" : {MYSQL_PORT},
 				"user" : "{MYSQL_USER}"
 			},
-			"max_connections" : 10,
 			"name" : "core"
 		}
 	]

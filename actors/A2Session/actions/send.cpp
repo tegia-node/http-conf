@@ -5,6 +5,8 @@
 */
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <string>
+
 std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlohmann::json &route_params)
 {  
 	int _STATUS_ = 0;
@@ -35,19 +37,30 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 	// Генерируем cookie с jwt
 	//
 
-	/*
-	cookie =	core::string::format() << cookie << "Set-Cookie: tegia_token=" 
-				<< tegia::threads::current()->get_jwt()  << ";"
-				<< " path=/; Max-Age=" << this->maxage << "; Domain=" << domain << "; SameSite=Strict; HttpOnly\r\n";
-	*/
 
 	//
 	// https://web.dev/i18n/ru/samesite-cookies-explained/
 	//
 
+	/*
 	cookie =	core::string::format() << cookie << "Set-Cookie: tegia_token=" 
 				<< tegia::threads::current()->get_jwt()  << ";"
-				<< " path=/; Max-Age=" << this->maxage << "; Domain=" << domain << "; SameSite=Lax; HttpOnly\r\n";
+				<< " path=/; Max-Age=" << this->params->cookie.maxage << "; Domain=" << domain << "; SameSite=Lax; HttpOnly\r\n";
+	*/
+
+	std::string http_only = "";
+	if(this->params->cookie.http_only == true)
+	{
+		http_only = "HttpOnly";
+	}
+
+	cookie =	"Set-Cookie: tegia_token=" + tegia::threads::current()->get_jwt()  + ";"
+				"path=/;"
+				"Max-Age=" + core::cast<std::string>(this->params->cookie.maxage) + ";"
+				"Domain=" + domain + ";"
+				"SameSite=" + this->params->cookie.same_site + ";" + 
+				http_only + "\r\n";
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -55,9 +68,9 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 	//
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	if(this->alloworigin == true)
+	if(this->params->cors.alloworigin == true)
 	{
-		std::string origin = "http://dit.local";
+		std::string origin = "";
 			
 		if(message->http->request.http_origin != "")
 		{

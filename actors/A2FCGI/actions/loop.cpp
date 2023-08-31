@@ -14,41 +14,55 @@ std::string A2FCGI::loop(const std::shared_ptr<message_t> &message, const nlohma
 	std::string _STATUS_ = "200";
 	/////////////////////////////////////////////////////////////////////////////////////////  
 
-	std::thread::id this_id = std::this_thread::get_id();
-	std::cout << _OK_TEXT_ << "fcgi listener thread " << this_id << " run...\n";
-	
-	//
-	// Инициализируем порт   
-	//
-
-	std::string host = message->data["host"].get<std::string>();
-	if(this->init_port(host, "FastCGI") == false)
+	try
 	{
-		std::cout << _ERR_TEXT_ << "port [" << host << "] init error" << std::endl;
-		exit(1); 
-	}
+		//
+		// Инициализируем параметры
+		//
 
-	//
-	// Берем порт на "прослушку"
-	//
+		this->validator.validate(message->data);
+		_params * params = new _params();
 
-	int rc = 0;
-	std::mutex accept_mutex;
-	bool work = true;
+		// fcgi
+		params->fcgi.host = message->data["fcgi"]["host"].get<std::string>();
+		params->fcgi.listen_queue_backlog = message->data["fcgi"]["listen_queue_backlog"].get<int>();
 
-	while(work)
-	{
-		// TODO: Реализовать завершение цикла если необходимо остановить Платформу 
-		try
+		// cookie
+		params->cookie.maxage = message->data["cookie"]["maxage"].get<long long int>();
+		params->cookie.same_site = message->data["cookie"]["same_site"].get<std::string>();
+		params->cookie.http_only = message->data["cookie"]["http_only"].get<bool>();
+
+		// cors
+		params->cors.alloworigin = message->data["cors"]["alloworigin"].get<bool>();
+
+		//
+		// Инициализируем порт   
+		//
+
+		if(this->init_port(params) == false)
 		{
+			std::cout << _ERR_TEXT_ << "port [" << params->fcgi.host << "] init error" << std::endl;
+			exit(1); 
+		}
+
+		//
+		// Слушаем порт
+		//
+
+		int rc = 0;
+		std::mutex accept_mutex;
+		bool work = true;		
+
+		while(work)
+		{
+			// TODO: Реализовать завершение цикла если необходимо остановить Платформу 
+	
 			std::string uuid = tegia::random::uuid();
 			std::string actor_name = "session/" + uuid;
 			nlohmann::json data = nlohmann::json::object();
 			A2Session *session = reinterpret_cast<A2Session *>(tegia::actors::_new("A2Session", actor_name, data, true));
 
-			session->port = this->port;
-			session->maxage = this->maxage;
-			session->alloworigin = this->alloworigin;
+			session->params = params;
 			session->uuid = uuid;
 
 			FCGX_Init();
@@ -70,14 +84,23 @@ std::string A2FCGI::loop(const std::shared_ptr<message_t> &message, const nlohma
 				msg->callback.push({actor_name, "/send"});
 				msg->callback.push({"sessions","/authorize"});
 				tegia::message::send(actor_name, "/init", msg, _PHIGHT_);
-			}
-		}
+			}  
+		}	// END while(work)
+	}
 
-		catch(const std::exception&) 
-		{
-			// TODO: handle error condition
-		}  
-	}  
+	//
+	// Обработка исключений
+	//
+
+	catch(const std::exception& e)
+	{
+		std::cout << _ERR_TEXT_ << e.what() << '\n';
+		exit(0);
+	}
+	
+	
+
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////  
 	return _STATUS_;

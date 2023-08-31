@@ -20,9 +20,11 @@
 	#include <tegia/context/thread_context.h>
 
 	#include <tegia/core/core.h>
+	#include <tegia/core/http.h>
 
 
 	#include "../../support/request.h"
+	#include "../../support/params.h"
 	#include "../../support/message_http.h"	
 	
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,9 +67,10 @@ class A2Session: public tegia::actors::actor_base
 		CRequest *request;
 		// Переменные окружения, определенные в конфигурационном файле
 
-		int port;							// Прослушиваемый порт для приема входящих fastcgi-соединений
-		long int maxage;					// Время жизни cookie, выставляемое при отправке http-запроса клиенту
-		bool alloworigin;					// Флаг, определяющий формировать ли заголовки для CORS
+		//int port;							// Прослушиваемый порт для приема входящих fastcgi-соединений
+		//long int maxage;					// Время жизни cookie, выставляемое при отправке http-запроса клиенту
+		//bool alloworigin;					// Флаг, определяющий формировать ли заголовки для CORS
+		_params * params;
 		std::string uuid;
 
 		// ----------------------------------------------------------------------------------   

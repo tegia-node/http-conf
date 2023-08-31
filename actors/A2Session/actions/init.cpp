@@ -161,7 +161,7 @@ std::string A2Session::init(const std::shared_ptr<message_t> &message, const nlo
 				}
 				else
 				{
-					message->http->request.post[param[0]] = core::url::decode(param[1]); 
+					message->http->request.post[param[0]] = tegia::http::unescape(param[1]); 
 				}
 			}
 		}	

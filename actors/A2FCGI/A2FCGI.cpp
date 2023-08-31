@@ -52,27 +52,43 @@ A2FCGI::A2FCGI(
 	const std::string &name, 
 	nlohmann::json &data):tegia::actors::actor_base(ACTOR_TYPE, name, data)
 {
-	DOUT(_YELLOW_ << "A2FCGI::A2FCGI() run" << _BASE_TEXT_); 
-
 	//
 	// Валидируем конфигурационные данные
 	//
 
-	try
+	try 
 	{
-		nlohmann::json_schema::json_validator validator;
-
-		validator.set_root_schema(
+		this->validator.set_root_schema(
 			R"({
 				"$schema": "http://json-schema.org/draft-07/schema#",
 				"title": "HTTP config schema",
 				"type": "object",
 				"properties": 
 				{
-					"alloworigin":
+					"fcgi":
 					{
-						"type": "boolean",
-						"description": "Флаг, определяющий формировать ли заголовки для CORS"
+						"type": "object",
+						"properties":
+						{
+							"port":
+							{
+								"type": "string",
+								"description": "Порт, на который приходит fcgi соединение от nginx"
+							}
+						}
+					},
+					"cors":
+					{
+						"type": "object",
+						"properties":
+						{
+							"alloworigin":
+							{
+								"type": "boolean",
+								"description": "Флаг, определяющий формировать ли заголовки для CORS"
+							}
+						},
+						"required": ["alloworigin"]
 					},
 					"cookie":
 					{
@@ -88,40 +104,17 @@ A2FCGI::A2FCGI(
 						"required": ["maxage"]
 					}
 				},
-				"required": ["alloworigin","cookie"]
+				"required": ["cors","cookie"]
 			})"_json
 		);
-
-		validator.validate(data);
-	}
-
-	catch (const nlohmann::json::exception &e)
-	{
-		std::cout << _ERR_TEXT_ << e.what() << std::endl;
-		exit(0);
 	}
 
 	catch (const std::exception &e)
 	{
-		std::cout << _ERR_TEXT_ << " Validation failed, here is why: " << e.what() << std::endl;
+		std::cout << _ERR_TEXT_ << " Validation config error: " << e.what() << std::endl;
 		std::cout << data.dump() << std::endl;
 		exit(0);
-	}
-
-	//
-	// Читаем значения переменных
-	//
-
-	DOUT(_YELLOW_ << "A2FCGI::A2FCGI() [4]" << _BASE_TEXT_)
-
-	this->maxage = data["/cookie/maxage"_json_pointer].get<long long int>();
-
-	DOUT(_YELLOW_ << "A2FCGI::A2FCGI() [5]" << _BASE_TEXT_)
-
-	this->alloworigin = data["/alloworigin"_json_pointer].get<bool>();
-
-	DOUT(_YELLOW_ << "A2FCGI::A2FCGI() end")
-	
+	}	
 }; 
 
 A2FCGI::~A2FCGI() { };
@@ -144,7 +137,7 @@ A2FCGI::~A2FCGI() { };
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool A2FCGI::init_port(const std::string &port, const std::string &protocol)
+bool A2FCGI::init_port(_params * params)
 {
 	LDEBUG( "Пытаемся инициализировать порт " << port );
 
@@ -154,14 +147,14 @@ bool A2FCGI::init_port(const std::string &port, const std::string &protocol)
 		return false; 
 	}
 
-	this->listen_socket = FCGX_OpenSocket(port.c_str(), listenQueueBacklog); //Открываем новый слушающий сокет
+	this->listen_socket = FCGX_OpenSocket(params->fcgi.host.c_str(), params->fcgi.listen_queue_backlog); //Открываем новый слушающий сокет
 	if(this->listen_socket < 0)
 	{
-		LERROR("Ошибка инициализации порта " << port);
+		LERROR("Ошибка инициализации порта " << params->fcgi.host);
 		return false; 
 	}
 
-	LNOTICE("Порт " << port << " успешно инициализирован" );
+	LNOTICE("Порт " << params->fcgi.host << " успешно инициализирован" );
 	return true;
 };    
 
