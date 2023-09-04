@@ -8,7 +8,7 @@ SET time_zone = "+00:00";
 --
 
 
-USE `tegia_core`;
+USE `{DB_PREFIX}_tegia_core`;
 
 
 --
