@@ -51,14 +51,14 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 	std::string http_only = "";
 	if(this->params->cookie.http_only == true)
 	{
-		http_only = "HttpOnly";
+		http_only = ";HttpOnly";
 	}
 
 	cookie =	"Set-Cookie: tegia_token=" + tegia::threads::current()->get_jwt()  + ";"
 				"path=/;"
 				"Max-Age=" + core::cast<std::string>(this->params->cookie.maxage) + ";"
 				"Domain=" + domain + ";"
-				"SameSite=" + this->params->cookie.same_site + ";" + 
+				"SameSite=" + this->params->cookie.same_site + 
 				http_only + "\r\n";
 
 
@@ -142,9 +142,9 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 		request->status = 400;
 		request->content = core::string::format() << cookie 
 				<< "Status: 400 Bad Request\r\n" 
+				<< "Content-Type: application/json; charset=utf-8\r\n"
 				<< "Cache-Control: no-cache\r\n" 
 				<< message->data["responce"]["header"].get<std::string>()
-				<< "Content-Type: application/json; charset=utf-8\r\n"
 				<< core::cast<std::string>(message->data["responce"]["message"])
 				<< "\r\n\r\n";
 		 
@@ -161,10 +161,10 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 		request->status = 401;
 		request->content = core::string::format() << cookie 
 				<< "Status: 401 Unauthorized\r\n" 
-				<< "Cache-Control: no-cache\r\n" 
-				<< message->data["responce"]["header"].get<std::string>()
 				<< "Content-Type: application/json; charset=utf-8\r\n"
-				<< "{ \"status\": \"error\", \"error\": {\"code\": 401,\"message\": \"unauthorized\"}}"
+				<< "Cache-Control: no-cache\r\n"
+				<< message->data["responce"]["header"].get<std::string>()
+				// << "{ \"status\": \"error\", \"error\": {\"code\": 401,\"message\": \"unauthorized\"}}"
 				<< "\r\n\r\n";
 		 
 		FCGX_PutStr(request->content.c_str(), request->content.size(),request->req->out);
@@ -179,10 +179,9 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 	{
 		request->content = core::string::format() << cookie 
 				<< "Status: 404 Not Found\r\n" 
+				<< "Content-Type: application/json; charset=utf-8\r\n"
 				<< "Cache-Control: no-cache\r\n" 
 				<< message->data["responce"]["header"].get<std::string>()
-				<< "Content-Type: application/json; charset=utf-8\r\n"
-				<< "{ \"status\": \"error\",\"error\": {\"code\": 404,\"message\": \"Not Found\"} }"
 				<< "\r\n\r\n";
 		 
 		FCGX_PutStr(request->content.c_str(), request->content.size(),request->req->out);
@@ -222,7 +221,7 @@ std::string A2Session::send(const std::shared_ptr<message_t> &message, const nlo
 				message->data["responce"]["header"].get<std::string>() +
 				"\r\n" +
 				message->data["responce"]["data"].dump() +
-				"\r\n\r\n";					
+				"\r\n";					
 		
 			FCGX_PutStr(request->content.c_str(), request->content.size(),request->req->out);
 			FCGX_Finish_r(request->req);  //Завершаем запрос
