@@ -70,7 +70,7 @@ A2FCGI::A2FCGI(
 						"type": "object",
 						"properties":
 						{
-							"port":
+							"host":
 							{
 								"type": "string",
 								"description": "Порт, на который приходит fcgi соединение от nginx"
