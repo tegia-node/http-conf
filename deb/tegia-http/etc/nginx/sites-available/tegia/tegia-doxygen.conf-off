@@ -1,8 +1,0 @@
-
-      # ===============================================================================
-      # DOCUMENTATION
-        location /doxygen
-        {
-           root  /var/www/tegia/doxygen;
-           index  index.html;
-        }

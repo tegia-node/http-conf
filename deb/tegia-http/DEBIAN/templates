@@ -1,5 +1,0 @@
-
-Template: tegia/http/setup-mode
-Type: multiselect
-Choices: dev, prod
-Description: Режим установки:
