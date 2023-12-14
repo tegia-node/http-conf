@@ -58,7 +58,9 @@ int LISTENER::init(const std::shared_ptr<message_t> &message)
 
 		int rc = 0;
 		std::mutex accept_mutex;
-		bool work = true;		
+		bool work = true;	
+
+		int k = 0;	
 
 		while(work)
 		{
@@ -87,8 +89,16 @@ int LISTENER::init(const std::shared_ptr<message_t> &message)
 			}
 			else
 			{
+				connections++;
+				k++;
 				tegia::message::send(actor_name, "/init", msg);
-			}  
+			}
+
+			if(k == 1000)
+			{
+				std::cout << "connections = " << connections << std::endl;
+				k = 0;
+			}
 
 		}	// END while(work)
 	}

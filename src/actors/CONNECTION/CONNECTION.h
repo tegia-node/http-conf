@@ -11,7 +11,7 @@
 //	TEGIA PLATFORM
 	#include <tegia2/tegia.h>
 	#include <tegia2/core/crypt.h>
-	#include <tegia/core/cast.h>
+	#include <tegia2/core/cast.h>
 	
 
 //	COMMON 

@@ -188,8 +188,8 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	auto _msg = std::make_shared<message_t>();
 	_msg->http["request"] = this->connection->json();
 	_msg->http["application"]["name"] = app->name;
-	_msg->http["connection"]["actor"] = this->name;
-	_msg->http["connection"]["action"] = "/response";
+	_msg->callback.add(this->name,"/response");
+
 
 	tegia::message::send(
 		this->app->actor,

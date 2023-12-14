@@ -58,6 +58,8 @@ class LISTENER: public tegia::actors::actor_base
 		// Множество приложений, которые "обслуживаются" этим актором
 		applications_t apps;
 
+		long long int connections = 0;
+
 		// ----------------------------------------------------------------------------------   
 		//
 		// SUPPORT FUNCTIONS 
