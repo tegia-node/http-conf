@@ -32,6 +32,4 @@ sudo apt --fix-broken install -y
 wget -N http://mirrors.kernel.org/ubuntu/pool/universe/libc/libcgicc/libcgicc5-dev_3.2.9-3ubuntu1_amd64.deb
 sudo dpkg -i libcgicc5-dev_3.2.9-3ubuntu1_amd64.deb
 
-
-echo "${_OK_}Установка успешно завершена"
 exit 0
