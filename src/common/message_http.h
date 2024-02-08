@@ -1,7 +1,7 @@
 #ifndef H_HTTP_MESSAGE
 #define H_HTTP_MESSAGE
 
-#include <tegia2/actors/message_t.h>
+#include <tegia/actors/message_t.h>
 
 #include "connection.h"
 #include "application.h"

@@ -12,7 +12,7 @@
 	
 	#include <chrono>
 
-	#include <tegia2/core/const.h>
+	#include <tegia/core/const.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //

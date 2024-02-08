@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include <tegia2/core/json.h>
+#include <tegia/core/json.h>
 
 class application_t
 {

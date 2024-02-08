@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include <tegia2/core/json.h>
+#include <tegia/core/json.h>
 
 
 class HTTP_REQUEST_DATA
