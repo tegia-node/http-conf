@@ -12,6 +12,8 @@
 	#include <tegia/tegia.h>
 	#include <tegia/core/crypt.h>
 	#include <tegia/core/cast.h>
+	#include <tegia/context/auth.h>
+	#include <tegia/core/string.h>
 	
 
 //	COMMON 
@@ -19,8 +21,6 @@
 	#include "../../common/message_http.h"
 	#include "../../common/connection.h"
 	#include "../../common/application.h"
-
-	#include "common/http_request.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////

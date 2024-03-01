@@ -131,6 +131,28 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 		}
 		break;
 
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		/*
+			403 application/json
+		*/
+		//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		case 2527689711:
+		{
+			this->connection->content = cookie +
+					"Status: 403 Forbidden\r\n" 
+					"Content-Type: application/json; charset=utf-8\r\n"
+					"Cache-Control: no-cache\r\n" +
+					message->http["response"]["header"].get<std::string>() +
+					"\r\n{}\r\n";
+			
+			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
+			FCGX_Finish_r(this->connection->req);
+			return 403;
+		}
+		break;
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		/*

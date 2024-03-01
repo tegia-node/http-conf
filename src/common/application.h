@@ -8,11 +8,15 @@
 
 #include <tegia/core/json.h>
 
+#include "connection.h"
+
 class application_t
 {
 	public:
-		application_t(){};
+		application_t();
 		~application_t() = default;
+
+		bool auth(Connection_t * connection);
 
 		std::string name;
 		
@@ -23,7 +27,7 @@ class application_t
 		bool cookie_http_only;
 		long long int cookie_maxage = 0;
 		std::string cookie_same_site;
-		std::vector<std::string> domains;
+		std::string domain;
 
 		//
 		// CORS
@@ -37,6 +41,9 @@ class application_t
 
 		std::string actor;
 		std::string action;
+
+		std::string pub_key_path{};
+		std::string priv_key_path{};
 };
 
 
@@ -84,22 +91,19 @@ class applications_t
 			// DOMAINS
 			//
 
-			for(auto domain = config["domains"].begin(); domain != config["domains"].end(); ++domain)
-			{
-				std::string domain_name = domain->get<std::string>();
-				const auto [_app, success] = apps.insert({domain_name,app});
+			std::string domain_name = config["domain"].get<std::string>();
+			const auto [_app, success] = apps.insert({domain_name,app});
 
-				if(success)
-				{
-					app->domains.push_back(domain_name);
-					// std::cout << _OK_TEXT_ << "domain '" << domain_name << "' success added" << std::endl;
-					// std::cout << "app name '" << _app->second->name << std::endl;
-				}
-				else
-				{
-					// std::cout << _ERR_TEXT_ << "domain '" << domain_name << "' not added" << std::endl;
-					// std::cout << "app name '" << _app->second->name << std::endl;
-				}
+			if(success)
+			{
+				app->domain = domain_name;
+				// std::cout << _OK_TEXT_ << "domain '" << domain_name << "' success added" << std::endl;
+				// std::cout << "app name '" << _app->second->name << std::endl;
+			}
+			else
+			{
+				// std::cout << _ERR_TEXT_ << "domain '" << domain_name << "' not added" << std::endl;
+				// std::cout << "app name '" << _app->second->name << std::endl;
 			}
 
 			return true;

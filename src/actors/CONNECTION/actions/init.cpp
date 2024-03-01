@@ -35,7 +35,7 @@ inline std::string get_param(const char* param_name, Connection_t *connection)
 int CONNECTION::init(const std::shared_ptr<message_t> &message)
 {
 	int _STATUS_ = 200;
-	/////////////////////////////////////////////////////////////////////////////////////////  
+	///////////////////////////////////////////////////////////////////////////////////////// 
 
 	auto msg = std::dynamic_pointer_cast<message_http_t>(message);
 	if(!msg)
@@ -44,6 +44,24 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	}
 	
 	this->connection = msg->_connection;
+
+
+	/*
+	// REM: Раскомментировать этот код, если нужно получить полный список всех заголовков
+
+	int i = 0;
+	while(this->connection->req->envp[i] != nullptr)
+	{
+		char * str = this->connection->req->envp[i];
+		char * position = strchr(str, '=') + sizeof(str[0]);
+		int p = strlen(str) - strlen(position) - 1;
+		i++;
+
+		std::cout << "param = " << std::string(str,p) << std::endl;
+		std::cout << "value = " << std::string(position) << std::endl;
+		std::cout << " " << std::endl;
+	}
+	*/
 
 	//
 	// CGI Query Information
@@ -82,15 +100,13 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 
 	if(FCGX_GetParam("HTTP_COOKIE", this->connection->req->envp) != nullptr)
 	{
-		/*
 		std::string cookie = std::string(FCGX_GetParam("HTTP_COOKIE", this->connection->req->envp));
-		auto cookie_arr = core::explode(cookie,"; ");
+		auto cookie_arr = tegia::string::explode(cookie,"; ");
 		for(auto it = cookie_arr.begin(); it != cookie_arr.end(); it++)
 		{
-			auto tmp = core::explode((*it),"=");
-			request.cookie.insert({tmp[0],tmp[1]});
+			auto tmp = tegia::string::explode((*it),"=");
+			this->connection->cookie.insert({tmp[0],tmp[1]});
 		}
-		*/
 	}
 
 	//
@@ -162,6 +178,10 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		// message->data["http"]["request"] = this->connection->post;
 	}
 
+	//
+	// TEST AUTH
+	//
+
 
 
 	//
@@ -181,6 +201,12 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		return 434;
 	}
 
+	//
+	// Аутентифицируемся
+	//
+
+	this->app->auth(this->connection);
+	
 	//
 	// Отправляем запрос на приложение
 	//

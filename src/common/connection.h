@@ -73,6 +73,8 @@ class Connection_t
 		nlohmann::json post = nlohmann::json();
 		nlohmann::json query_param = nlohmann::json();
 
+		std::unordered_map<std::string,std::string> cookie;
+
 		//
 		// CONNECTION
 		//
