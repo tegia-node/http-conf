@@ -133,6 +133,27 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		/*
+			400 application/json
+		*/
+		//////////////////////////////////////////////////////////////////////////////////////////////
+
+		case 3308462187:
+		{
+			this->connection->content = cookie +
+					"Status: 400 Bad Request\r\n" 
+					"Content-Type: application/json; charset=utf-8\r\n"
+					"Cache-Control: no-cache\r\n" +
+					message->http["response"]["header"].get<std::string>() +
+					"\r\n{}\r\n";
+			
+			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
+			FCGX_Finish_r(this->connection->req);
+			return 400;
+		}
+		break;
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		/*
 			403 application/json
 		*/
 		//////////////////////////////////////////////////////////////////////////////////////////////
