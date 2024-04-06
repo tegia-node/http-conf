@@ -66,7 +66,7 @@ int LISTENER::init(const std::shared_ptr<message_t> &message)
 		{
 			// TODO: Реализовать завершение цикла если необходимо остановить Платформу 
 
-			std::cout << "fast cgi loop" << std::endl;
+			// std::cout << "fast cgi loop" << std::endl;
 
 			auto msg = std::make_shared<message_http_t>();
 			msg->_connection = new Connection_t();

@@ -57,7 +57,7 @@ class applications_t
 
 		std::tuple<bool, application_t * const> get(const std::string &domain)
 		{
-			std::cout << "apps->get() " << domain << std::endl;
+			// std::cout << "apps->get() " << domain << std::endl;
 
 			auto pos = this->apps.find(domain);
 			if(pos == this->apps.end())

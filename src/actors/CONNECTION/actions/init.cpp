@@ -173,7 +173,7 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 			*/
 		}	
 
-		std::cout << "POST data: " << this->connection->post << std::endl;
+		// std::cout << "POST data: " << this->connection->post << std::endl;
 
 		// message->data["http"]["request"] = this->connection->post;
 	}

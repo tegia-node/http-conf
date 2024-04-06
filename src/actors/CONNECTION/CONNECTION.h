@@ -12,7 +12,7 @@
 	#include <tegia/tegia.h>
 	#include <tegia/core/crypt.h>
 	#include <tegia/core/cast.h>
-	#include <tegia/context/auth.h>
+	#include <tegia/app/auth.h>
 	#include <tegia/core/string.h>
 	
 
@@ -42,6 +42,8 @@ class CONNECTION: public tegia::actors::actor_base
 
 		CONNECTION(const std::string &name, nlohmann::json &data); 
 		~CONNECTION();  
+
+		// static HTTP::CONNECTION * create(name,data);
 
 		int init(const std::shared_ptr<message_t> &message);
 		int response(const std::shared_ptr<message_t> &message);

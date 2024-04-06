@@ -1,5 +1,5 @@
 #include "application.h"
-#include <tegia/context/auth.h>
+#include <tegia/app/auth.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -26,6 +26,8 @@ bool application_t::auth(Connection_t * connection)
 	std::string token{};
 	bool is_auth = true;
 
+	// std::cout << _YELLOW_ << connection->http_authorization << _BASE_TEXT_ << std::endl;
+	
 	if("Bearer " == connection->http_authorization.substr(0,7))
 	{
 		status = status + 1;
@@ -67,21 +69,21 @@ bool application_t::auth(Connection_t * connection)
 
 	if(is_auth == true)
 	{
-		std::cout << "token = " << token << std::endl;
+		// std::cout << "token = " << token << std::endl;
 
-		std::cout << "-----------------------------------" << std::endl; 
-		std::cout << "UNPACK START" << std::endl;
-		std::cout << "-----------------------------------" << std::endl; 
+		// std::cout << "-----------------------------------" << std::endl; 
+		// std::cout << "UNPACK START" << std::endl;
+		// std::cout << "-----------------------------------" << std::endl; 
 
 		std::string pub_key = tegia::auth::key("./jwt_keys/" + this->domain + "/jwtRS256.key.pub");
 		auto jwt = tegia::auth::unpack(token,pub_key);
 
-		std::cout << "state = " << jwt->status() << std::endl;
-		jwt->print();
+		// std::cout << "state = " << jwt->status() << std::endl;
+		// jwt->print();
 
-		std::cout << "-----------------------------------" << std::endl; 
-		std::cout << "UNPACK END" << std::endl;
-		std::cout << "-----------------------------------" << std::endl; 
+		// std::cout << "-----------------------------------" << std::endl; 
+		// std::cout << "UNPACK END" << std::endl;
+		// std::cout << "-----------------------------------" << std::endl; 
 	}
 
 	return is_auth;
