@@ -57,10 +57,11 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	// REM: Записывает в лог полный список всех заголовков
 	//
 
+	std::string query;
+	
 	#if _LOG_LEVEL_ == _LOG_DEBUG_
 	{
 		int i = 0;
-		std::string query;
 
 		while(this->connection->req->envp[i] != nullptr)
 		{
@@ -118,6 +119,14 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	if(FCGX_GetParam("HTTP_COOKIE", this->connection->req->envp) != nullptr)
 	{
 		std::string cookie = std::string(FCGX_GetParam("HTTP_COOKIE", this->connection->req->envp));
+
+		#if _LOG_LEVEL_ == _LOG_DEBUG_
+		{
+			query = query + "Cookies: " + cookie + "\n";
+			LDEBUG(query);
+		}
+		#endif
+
 		auto cookie_arr = tegia::string::explode(cookie,"; ");
 		for(auto it = cookie_arr.begin(); it != cookie_arr.end(); it++)
 		{
@@ -131,10 +140,6 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	//
 
 
-	/*
-		curl -X POST http://app.my-check.local/api/v3/contacts/search/-/search -H 'Content-Type: application/json' -d '{"type":"email","contact":"ivandos34rus@mail.ru"}'
-	*/
-
 	int content_length = 0;
 	if(this->connection->content_length != "")
 	{
@@ -147,6 +152,13 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		FCGX_GetStr(buff,content_length+1,this->connection->req->in);
 		std::string post = std::string(buff, content_length);
 		delete buff;
+
+		#if _LOG_LEVEL_ == _LOG_DEBUG_
+		{
+			query = query + "POST: " + post + "\n";
+			LDEBUG(query);
+		}
+		#endif
 
 		//
 		// Проверяем, что POST-данные содержат валидный JSON
