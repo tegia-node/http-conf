@@ -1,3 +1,9 @@
+/////////////////////////////////////////////////////////////////////
+#undef _LOG_LEVEL_
+#define _LOG_LEVEL_ _LOG_DEBUG_
+#include <tegia/context/log.h>
+/////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
 
@@ -31,11 +37,12 @@ inline std::string get_param(const char* param_name, Connection_t *connection)
 };
 
 
-
 int CONNECTION::init(const std::shared_ptr<message_t> &message)
 {
 	int _STATUS_ = 200;
 	///////////////////////////////////////////////////////////////////////////////////////// 
+
+	LDEBUG("START CONNECTION");
 
 	auto msg = std::dynamic_pointer_cast<message_http_t>(message);
 	if(!msg)
@@ -46,22 +53,32 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	this->connection = msg->_connection;
 
 
-	/*
-	// REM: Раскомментировать этот код, если нужно получить полный список всех заголовков
+	//
+	// REM: Записывает в лог полный список всех заголовков
+	//
 
-	int i = 0;
-	while(this->connection->req->envp[i] != nullptr)
+	#if _LOG_LEVEL_ == _LOG_DEBUG_
 	{
-		char * str = this->connection->req->envp[i];
-		char * position = strchr(str, '=') + sizeof(str[0]);
-		int p = strlen(str) - strlen(position) - 1;
-		i++;
+		int i = 0;
+		std::string query;
 
-		std::cout << "param = " << std::string(str,p) << std::endl;
-		std::cout << "value = " << std::string(position) << std::endl;
-		std::cout << " " << std::endl;
+		while(this->connection->req->envp[i] != nullptr)
+		{
+			char * str = this->connection->req->envp[i];
+			char * position = strchr(str, '=') + sizeof(str[0]);
+			int p = strlen(str) - strlen(position) - 1;
+			i++;
+
+			// std::cout << "param = " << std::string(str,p) << std::endl;
+			// std::cout << "value = " << std::string(position) << std::endl;
+			// std::cout << " " << std::endl;
+
+			query = query + std::string(str,p) + " = '" + std::string(position) + "'\n";
+		}
+
+		LDEBUG(query)
 	}
-	*/
+	#endif
 
 	//
 	// CGI Query Information
@@ -154,7 +171,9 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 
 		catch(nlohmann::json::parse_error& e)
 		{
-			std::cout << "POST RAW data: " << post << std::endl;
+			LDEBUG("POST RAW data: " + post);
+
+			// std::cout << "POST RAW data: " << post << std::endl;
 
 			/*
 			auto params = core::explode(post,"&",true);
@@ -172,10 +191,6 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 			}
 			*/
 		}	
-
-		// std::cout << "POST data: " << this->connection->post << std::endl;
-
-		// message->data["http"]["request"] = this->connection->post;
 	}
 
 	//

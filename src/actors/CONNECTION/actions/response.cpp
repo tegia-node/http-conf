@@ -200,6 +200,29 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		/*
+			500 application/json
+		*/
+		//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		case 315727923:
+		{
+			this->connection->content = cookie +
+					"Status: 500 Internal Server Error\r\n" 
+					"Content-Type: application/json; charset=utf-8\r\n"
+					"Cache-Control: no-cache\r\n" +
+					message->http["response"]["header"].get<std::string>() +
+					"\r\n{}\r\n";
+			
+			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
+			FCGX_Finish_r(this->connection->req);
+			return 500;
+		}
+		break;
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		/*
 			DEFAULT
 		*/
 		//////////////////////////////////////////////////////////////////////////////////////////////
