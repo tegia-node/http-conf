@@ -32,7 +32,7 @@
 
 namespace HTTP {
 
-class CONNECTION: public tegia::actors::actor_base
+class CONNECTION: public tegia::actors::actor_t<HTTP::CONNECTION>
 {	
 	public:
 
@@ -40,7 +40,10 @@ class CONNECTION: public tegia::actors::actor_base
 		// ACTION FUNCTIONS
 		// ----------------------------------------------------------------------------------   
 
-		CONNECTION(const std::string &name, nlohmann::json &data); 
+		CONNECTION(
+			const std::string &name, 
+			tegia::actors::type_t<HTTP::CONNECTION> * type);
+
 		~CONNECTION();  
 
 		// static HTTP::CONNECTION * create(name,data);

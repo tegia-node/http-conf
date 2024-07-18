@@ -28,7 +28,7 @@
 
 namespace HTTP {
 
-class LISTENER: public tegia::actors::actor_base
+class LISTENER: public tegia::actors::actor_t<HTTP::LISTENER>
 {	
 	public:
 
@@ -38,8 +38,12 @@ class LISTENER: public tegia::actors::actor_base
 		//
 		// ----------------------------------------------------------------------------------   
 
-		LISTENER(const std::string &name, nlohmann::json &data); 
+		LISTENER(
+			const std::string &name, 
+			tegia::actors::type_t<HTTP::LISTENER> * type);
+
 		~LISTENER();  
+
 
 		int init(const std::shared_ptr<message_t> &message);
 		int add_application(const std::shared_ptr<message_t> &message);

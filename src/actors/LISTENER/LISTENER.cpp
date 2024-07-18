@@ -9,6 +9,18 @@
 #define ACTOR_TYPE "HTTP::LISTENER"
 
 
+extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
+{	
+	auto type = new tegia::actors::type_t<HTTP::LISTENER>(ACTOR_TYPE);
+
+	type->add_action("/parse",   &HTTP::LISTENER::init);
+	type->add_action("/run",     &HTTP::LISTENER::add_application);
+
+	RETURN_TYPE(type,HTTP::LISTENER)
+};
+
+
+/*
 extern "C" tegia::actors::type_base * _load_type()
 {
 	auto actor_type = new tegia::actors::type<HTTP::LISTENER>(ACTOR_TYPE);
@@ -18,6 +30,7 @@ extern "C" tegia::actors::type_base * _load_type()
 
 	return actor_type;
 };
+*/
 
 
 
@@ -42,11 +55,12 @@ static const unsigned long STDIN_MAX = 1000000;
 
 namespace HTTP {
 
+
 LISTENER::LISTENER(
 	const std::string &name, 
-	nlohmann::json &data):tegia::actors::actor_base(ACTOR_TYPE, name, data)
+	tegia::actors::type_t<HTTP::LISTENER> * type)
+: tegia::actors::actor_t<HTTP::LISTENER>(name,type)
 {
-
 	//
 	// Инициализируем JSON SCHEME VALIDATOR для /init
 	//
@@ -107,7 +121,7 @@ LISTENER::LISTENER(
 	catch (const std::exception &e)
 	{
 		std::cout << _ERR_TEXT_ << " Validation config error: " << e.what() << std::endl;
-		std::cout << data.dump() << std::endl;
+		// std::cout << data.dump() << std::endl;
 		exit(0);
 	}	
 };

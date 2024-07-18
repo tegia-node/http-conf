@@ -42,7 +42,7 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	int _STATUS_ = 200;
 	///////////////////////////////////////////////////////////////////////////////////////// 
 
-	LDEBUG("START CONNECTION " + this->name);
+	LDEBUG("START CONNECTION " + this->_name);
 
 	auto msg = std::dynamic_pointer_cast<message_http_t>(message);
 	if(!msg)
@@ -63,7 +63,7 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	{
 		int i = 0;
 
-		query = query + "CONNECTION " + this->name + "\n";
+		query = query + "CONNECTION " + this->_name + "\n";
 
 		while(this->connection->req->envp[i] != nullptr)
 		{
@@ -226,7 +226,7 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		auto _msg = std::make_shared<message_t>();
 		_msg->http["response"]["status"] = 434;	// Запрашиваемый хост недоступен
 		_msg->http["response"]["type"] = "application/json";
-		tegia::message::send(this->name,"/response",_msg);
+		tegia::message::send(this->_name,"/response",_msg);
 		return 434;
 	}
 
@@ -243,7 +243,7 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	auto _msg = std::make_shared<message_t>();
 	_msg->http["request"] = this->connection->json();
 	_msg->http["application"]["name"] = app->name;
-	_msg->callback.add(this->name,"/response");
+	_msg->callback.add(this->_name,"/response");
 
 
 	tegia::message::send(
