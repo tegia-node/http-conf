@@ -14,13 +14,14 @@
 	#include <tegia/core/cast.h>
 	#include <tegia/app/auth.h>
 	#include <tegia/core/string.h>
+	#include <tegia/db/mysql/mysql.h>
 	
 
 //	COMMON 
 	#include "../../common/params.h"
 	#include "../../common/message_http.h"
 	#include "../../common/connection.h"
-	#include "../../common/application.h"
+	#include "../../common/domain.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,10 +52,13 @@ class CONNECTION: public tegia::actors::actor_t<HTTP::CONNECTION>
 		int init(const std::shared_ptr<message_t> &message);
 		int response(const std::shared_ptr<message_t> &message);
 
+		int test_01(const std::shared_ptr<message_t> &message);
+		int test_02(const std::shared_ptr<message_t> &message);
+
 	private:
 
-		Connection_t * connection = nullptr;
-		application_t * app;
+		connection_t * connection = nullptr;
+		domain_t * domain;
 
 		// ----------------------------------------------------------------------------------   
 		// SUPPORT FUNCTIONS 

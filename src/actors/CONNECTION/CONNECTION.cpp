@@ -13,25 +13,13 @@ extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 {	
 	auto type = new tegia::actors::type_t<HTTP::CONNECTION>(ACTOR_TYPE);
 
-	type->add_action("/parse",   &HTTP::CONNECTION::init);
-	type->add_action("/run",     &HTTP::CONNECTION::response);
+	type->add_action("/init",         &HTTP::CONNECTION::init);
+	type->add_action("/response",     &HTTP::CONNECTION::response);
+	type->add_action("/test/01",      &HTTP::CONNECTION::test_01);
+	type->add_action("/test/02",      &HTTP::CONNECTION::test_02);
 
-	RETURN_TYPE(type,HTTP::CONNECTION)
+	return type;
 };
-
-
-/*
-extern "C" tegia::actors::type_base * _load_type()
-{
-	auto actor_type = new tegia::actors::type<HTTP::CONNECTION>(ACTOR_TYPE);
-
-	ADD_ACTION( "/init",							&HTTP::CONNECTION::init);
-	ADD_ACTION( "/response",						&HTTP::CONNECTION::response);
-
-	return actor_type;
-};
-*/
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +53,7 @@ CONNECTION::~CONNECTION() { };
 
 #include "actions/init.cpp"
 #include "actions/response.cpp"
+#include "actions/test.cpp"
 
 	
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,13 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 
 
 	/*
+	std::cout << _YELLOW_ << "message->http" << _BASE_TEXT_ << std::endl;
+	std::cout << message->http << std::endl;
+	std::cout << _YELLOW_ << "message->data" << _BASE_TEXT_ << std::endl;
+	std::cout << message->data << std::endl;
+	*/
+
+	/*
 	std::cout << "HTTP::CONNECTION::response()" << std::endl;
 	std::cout << "SCRIPT_NAME     = " << this->request.script_name << std::endl;
 	std::cout << "SERVER_NAME     = " << this->request.server_name << std::endl;

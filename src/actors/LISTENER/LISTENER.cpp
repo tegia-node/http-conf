@@ -13,25 +13,11 @@ extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 {	
 	auto type = new tegia::actors::type_t<HTTP::LISTENER>(ACTOR_TYPE);
 
-	type->add_action("/parse",   &HTTP::LISTENER::init);
-	type->add_action("/run",     &HTTP::LISTENER::add_application);
+	type->add_action("/init",                &HTTP::LISTENER::init);
+	type->add_action("/domain/add",          &HTTP::LISTENER::add_domain);
 
-	RETURN_TYPE(type,HTTP::LISTENER)
+	return type;
 };
-
-
-/*
-extern "C" tegia::actors::type_base * _load_type()
-{
-	auto actor_type = new tegia::actors::type<HTTP::LISTENER>(ACTOR_TYPE);
-
-	ADD_ACTION( "/init",							&HTTP::LISTENER::init);
-	ADD_ACTION( "/application/add",					&HTTP::LISTENER::add_application);
-
-	return actor_type;
-};
-*/
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,10 +51,8 @@ LISTENER::LISTENER(
 	// Инициализируем JSON SCHEME VALIDATOR для /init
 	//
 
-	try 
-	{
-		this->validator_init.set_root_schema(
-			R"({
+	auto res = this->_validator_init.load(
+		R"({
 				"$schema": "http://json-schema.org/draft-07/schema#",
 				"title": "HTTP config schema",
 				"type": "object",
@@ -83,47 +67,24 @@ LISTENER::LISTENER(
 							{
 								"type": "string",
 								"description": "Порт, на который приходит fcgi соединение от nginx"
-							}
-						}
-					},
-					"cors":
-					{
-						"type": "object",
-						"properties":
-						{
-							"alloworigin":
-							{
-								"type": "boolean",
-								"description": "Флаг, определяющий формировать ли заголовки для CORS"
-							}
-						},
-						"required": ["alloworigin"]
-					},
-					"cookie":
-					{
-						"type": "object",
-						"properties":
-						{
-							"maxage":
+							},
+							"listen_queue_backlog":
 							{
 								"type": "number",
-								"description": "Время жизни cookie, выставляемое при отправке http-запроса клиенту"
+								"description": ""
 							}
 						},
-						"required": ["maxage"]
+						"required": ["host","listen_queue_backlog"]
 					}
 				},
-				"required": ["cors","cookie"]
-			})"_json
-		);
-	}
+				"required": ["fcgi"]
+			})"_json);
 
-	catch (const std::exception &e)
+	if(res == false)
 	{
-		std::cout << _ERR_TEXT_ << " Validation config error: " << e.what() << std::endl;
-		// std::cout << data.dump() << std::endl;
+		std::cout << _ERR_TEXT_ << "LOAD _validator_init ERROR" << std::endl;
 		exit(0);
-	}	
+	}
 };
 
 LISTENER::~LISTENER() { };
@@ -139,7 +100,7 @@ LISTENER::~LISTENER() { };
 
 
 #include "actions/init.cpp"
-#include "actions/add_application.cpp"
+#include "actions/add_domain.cpp"
 
 	
 ////////////////////////////////////////////////////////////////////////////////////////////

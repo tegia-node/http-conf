@@ -16,13 +16,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //
-// Connection_t CLASS                                                                     //
+// connection_t CLASS                                                                     //
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-class Connection_t
+class connection_t
 {
 	private:
 
@@ -30,13 +30,13 @@ class Connection_t
 		std::chrono::high_resolution_clock::time_point end_time;
 
 	public:
-		Connection_t() 
+		connection_t() 
 		{   
 			this->start_time = std::chrono::high_resolution_clock::now();
 			this->req = new FCGX_Request;
 		};
 
-		~Connection_t() 
+		~connection_t() 
 		{
 			delete this->req;
 

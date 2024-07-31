@@ -4,7 +4,8 @@
 #include <tegia/actors/message_t.h>
 
 #include "connection.h"
-#include "application.h"
+#include "domain.h"
+#include "ws.h" 
 
 namespace HTTP {
 class LISTENER;
@@ -18,8 +19,9 @@ class message_http_t: public message_t
 
 	
 	private:
-		Connection_t * _connection = nullptr;
-		applications_t * apps = nullptr;
+		connection_t * _connection = nullptr;
+		domains_t    * _domains = nullptr;
+		workspaces_t * _workspaces = nullptr;
 
 	public:
 		message_http_t(): message_t()

@@ -4,27 +4,20 @@
 #include <tegia/context/log.h>
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
 
 	\brief Обработчик сообщения /init
 	\detail
-
-	Сценарий обработки connection:
-	1. /init - парсим параметры запроса
-	2. /auth - авторизуем пользователя
-	3. /route - по доменному имени определяем какое запрашивается приложение
-	4. Отправляем запрос в соответствующее приложение, указывая callback для отправки ответа
-	5. /responce - отправляем ответ
-	6. "выгружаем" актор соединения
-		
+	
 */   
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace HTTP {
 
 
-inline std::string get_param(const char* param_name, Connection_t *connection)
+inline std::string get_param(const char* param_name, connection_t *connection)
 {
 	if(FCGX_GetParam(param_name, connection->req->envp) != nullptr)
 	{
@@ -37,10 +30,20 @@ inline std::string get_param(const char* param_name, Connection_t *connection)
 };
 
 
+
 int CONNECTION::init(const std::shared_ptr<message_t> &message)
 {
 	int _STATUS_ = 200;
+
+
 	///////////////////////////////////////////////////////////////////////////////////////// 
+	/*
+		
+		PARSING HTTP PARAMS
+
+	*/
+	///////////////////////////////////////////////////////////////////////////////////////// 
+
 
 	LDEBUG("START CONNECTION " + this->_name);
 
@@ -207,18 +210,13 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		}	
 	}
 
-	//
-	// TEST AUTH
-	//
-
-
 
 	//
-	// FOUND APPLICATION
+	// FOUND DOMAIN
 	//
 
 	bool res;
-	std::tie(res,this->app) = msg->apps->get(this->connection->server_name);
+	std::tie(res,this->domain) = msg->_domains->get(this->connection->server_name);
 	if(res == false)
 	{
 		std::cout << _ERR_TEXT_ << "not found app name for domain '" << this->connection->server_name << "'" << std::endl;
@@ -230,27 +228,106 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 		return 434;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////////// 
+	/*
+		
+		FOUND WORKSPASE
+
+	*/
+	///////////////////////////////////////////////////////////////////////////////////////// 
+
+	// std::cout << this->connection->json() << std::endl;
+
+	std::string wsid = "";
+	std::string action = "";
+
+	//
+	// Извлекаем компоненты запроса
+	//
+
+	{
+		auto pos = this->connection->script_name.find("/",8);
+		if(pos == std::string::npos)
+		{
+			wsid = this->connection->script_name.substr(8);
+		}
+		else
+		{
+			wsid = this->connection->script_name.substr(8,pos-8);
+			action = this->connection->script_name.substr(pos);
+		}
+	}
+
+	//
+	// Ищем информацию о WS
+	//
+
+	auto _msg = tegia::message::init();
+	auto [code,ws] = msg->_workspaces->find(wsid);
+	switch(code)
+	{
+		case 200:
+		{
+			// OK
+		}
+		break;
+
+		case 404:
+		{
+			_msg->http["response"]["status"] = 404;
+			_msg->http["response"]["type"] = "application/json";
+			return 404;
+		}
+		break;
+
+		case 500:
+		{
+			_msg->http["response"]["status"] = 500;
+			_msg->http["response"]["type"] = "application/json";
+			return 500;
+		}
+		break;
+	}
+
 	//
 	// Аутентифицируемся
 	//
 
-	this->app->auth(this->connection);
+	this->domain->auth(this->connection);
 	
+	//
+	// Выполняем роутинг
+	//
+
+	_msg->http["response"]["status"] = 200;
+	_msg->http["response"]["type"] = "application/json";
+	_msg->http["request"] = this->connection->json();
+	_msg->http["action"] = action;
+	_msg->http["application"]["name"] = domain->name;
+	_msg->callback.add(this->_name,"/response");
+
+	tegia::message::send(
+		ws->actor,
+		"/router",
+		_msg);
+
+
 	//
 	// Отправляем запрос на приложение
 	//
 
+	/*
 	auto _msg = std::make_shared<message_t>();
 	_msg->http["request"] = this->connection->json();
-	_msg->http["application"]["name"] = app->name;
+	_msg->http["application"]["name"] = domain->name;
 	_msg->callback.add(this->_name,"/response");
 
 
 	tegia::message::send(
-		this->app->actor,
-		this->app->action,
+		this->domain->actor,
+		this->domain->action,
 		_msg);
-
+	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////  
 	return _STATUS_;
