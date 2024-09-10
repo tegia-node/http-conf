@@ -114,7 +114,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 				message->data.dump() +
 				"\r\n";					
 		
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);
@@ -141,7 +141,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					message->http["response"]["header"].get<std::string>() +
 					"\r\n{}\r\n";
 			
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);
@@ -164,7 +164,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					message->http["response"]["header"].get<std::string>() +
 					"\r\n{}\r\n";
 			
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);
@@ -188,7 +188,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					message->http["response"]["header"].get<std::string>() +
 					"\r\n{}\r\n";
 			
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);
@@ -213,7 +213,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					message->http["response"]["header"].get<std::string>() +
 					"\r\n{}\r\n";
 			
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);
@@ -238,7 +238,7 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					message->http["response"]["header"].get<std::string>() +
 					"\r\n{}\r\n";
 			
-			LDEBUG("CONNECTION " + this->_name + "\n\n" + this->connection->content);
+			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 			
 			FCGX_PutStr(this->connection->content.c_str(), this->connection->content.size(),this->connection->req->out);
 			FCGX_Finish_r(this->connection->req);

@@ -1,6 +1,9 @@
 #ifndef H_HTTP_FASTCGI_CONNECTION
 #define H_HTTP_FASTCGI_CONNECTION
 
+	#include <tegia/core/const.h>
+	#include <tegia/core/json.h>
+
 //	VENDORS: FastCGI
 	#include <unistd.h>
 	#include <fcgi_stdio.h>
@@ -12,7 +15,6 @@
 	
 	#include <chrono>
 
-	#include <tegia/core/const.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //
@@ -30,22 +32,11 @@ class connection_t
 		std::chrono::high_resolution_clock::time_point end_time;
 
 	public:
-		connection_t() 
-		{   
-			this->start_time = std::chrono::high_resolution_clock::now();
-			this->req = new FCGX_Request;
-		};
+		connection_t();
 
-		~connection_t() 
-		{
-			delete this->req;
+		~connection_t();
 
-			this->end_time = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(this->end_time - this->start_time).count();
-
-			std::cout 	<< _YELLOW_ << "[" << this->status << "] REQUEST " << _BASE_TEXT_ 
-						<< this->url << " (time: " << duration << ")"  << std::endl;
-		};
+		bool init(const std::string &name);
 
 		//
 		// REQUEST PARAM

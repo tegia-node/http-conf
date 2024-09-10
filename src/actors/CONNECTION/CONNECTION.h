@@ -33,7 +33,7 @@
 
 namespace HTTP {
 
-class CONNECTION: public tegia::actors::actor_t<HTTP::CONNECTION>
+class CONNECTION: public tegia::actors::actor_t
 {	
 	public:
 
@@ -41,9 +41,7 @@ class CONNECTION: public tegia::actors::actor_t<HTTP::CONNECTION>
 		// ACTION FUNCTIONS
 		// ----------------------------------------------------------------------------------   
 
-		CONNECTION(
-			const std::string &name, 
-			tegia::actors::type_t<HTTP::CONNECTION> * type);
+		CONNECTION(const std::string &name);
 
 		~CONNECTION();  
 
@@ -60,9 +58,14 @@ class CONNECTION: public tegia::actors::actor_t<HTTP::CONNECTION>
 		connection_t * connection = nullptr;
 		domain_t * domain;
 
+		tegia::json::validator _validator_http_data;
+
 		// ----------------------------------------------------------------------------------   
 		// SUPPORT FUNCTIONS 
 		// ----------------------------------------------------------------------------------   
+
+		int route_send(const std::shared_ptr<message_http_t> &message);
+		int route_current(const std::shared_ptr<message_http_t> &message);
 
 		int response_200(const std::shared_ptr<message_t> &message);
 

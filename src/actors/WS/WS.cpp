@@ -9,24 +9,15 @@
 #define ACTOR_TYPE "HTTP::WS"
 
 
-template <>
-tegia::actors::actor_base_t *  tegia::actors::type_t<HTTP::WS>::create_actor(const std::string &name)
-{
-	std::cout << "create actor HTTP::WS" << std::endl;
-
-	exit(0);
-	
-	return new HTTP::WS(name, this);
-};
-
-
-
-
 extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 {	
 	auto type = new tegia::actors::type_t<HTTP::WS>(ACTOR_TYPE);
 
-	type->add_action("/resolve",         &HTTP::WS::resolve);
+	type->add_action(
+		"/resolve",
+		static_cast<tegia::actors::action_fn_ptr>(&HTTP::WS::resolve),
+		tegia::user::roles(ROLES::SESSION::PUBLIC, ROLES::SESSION::USER)
+	);
 
 	return type;
 };
@@ -41,10 +32,7 @@ extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 namespace HTTP {
 
 
-WS::WS(
-	const std::string &name, 
-	tegia::actors::type_t<HTTP::WS> * type)
-: tegia::actors::actor_t<HTTP::WS>(name,type)
+WS::WS(const std::string &name): tegia::actors::ws_t(ACTOR_TYPE,name)
 {
 	
 };

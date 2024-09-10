@@ -14,6 +14,8 @@
 	#include <tegia/core/cast.h>
 	#include <tegia/app/auth.h>
 	#include <tegia/core/string.h>
+
+	#include <tegia/ws/ws.h>
 	
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,7 @@
 
 namespace HTTP {
 
-class WS: public tegia::actors::actor_t<HTTP::WS>
+class WS: public tegia::actors::ws_t
 {	
 	public:
 
@@ -33,9 +35,7 @@ class WS: public tegia::actors::actor_t<HTTP::WS>
 		// ACTION FUNCTIONS
 		// ----------------------------------------------------------------------------------   
 
-		WS(
-			const std::string &name, 
-			tegia::actors::type_t<HTTP::WS> * type);
+		WS(const std::string &name);
 
 		~WS();  
 

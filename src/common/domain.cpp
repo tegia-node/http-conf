@@ -21,7 +21,7 @@ domain_t::domain_t()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool domain_t::auth(connection_t * connection)
+bool domain_t::auth(connection_t * connection, const std::string &wsid)
 {
 	int status = 0;
 	std::string token{};
@@ -43,8 +43,7 @@ bool domain_t::auth(connection_t * connection)
 	{
 		case 0:
 		{
-			// NO AUTH
-			is_auth = false;
+			token = "";
 		}
 		break;
 

@@ -13,8 +13,8 @@ extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 {	
 	auto type = new tegia::actors::type_t<HTTP::LISTENER>(ACTOR_TYPE);
 
-	type->add_action("/init",                &HTTP::LISTENER::init);
-	type->add_action("/domain/add",          &HTTP::LISTENER::add_domain);
+	ADD_ACTION("/init",       &HTTP::LISTENER::init,       ROLES::SESSION::SYSTEM);
+	ADD_ACTION("/domain/add", &HTTP::LISTENER::add_domain, ROLES::SESSION::SYSTEM);
 
 	return type;
 };
@@ -42,10 +42,7 @@ static const unsigned long STDIN_MAX = 1000000;
 namespace HTTP {
 
 
-LISTENER::LISTENER(
-	const std::string &name, 
-	tegia::actors::type_t<HTTP::LISTENER> * type)
-: tegia::actors::actor_t<HTTP::LISTENER>(name,type)
+LISTENER::LISTENER(const std::string &name): tegia::actors::actor_t(ACTOR_TYPE,name)
 {
 	//
 	// Инициализируем JSON SCHEME VALIDATOR для /init
@@ -85,6 +82,8 @@ LISTENER::LISTENER(
 		std::cout << _ERR_TEXT_ << "LOAD _validator_init ERROR" << std::endl;
 		exit(0);
 	}
+
+	this->status = 200;
 };
 
 LISTENER::~LISTENER() { };

@@ -43,8 +43,9 @@ libLISTENER:
 	g++ -c -o FCgiIO.o              ../src/actors/LISTENER/common/FCgiIO.cpp    $(Flag) -fPIC
 	g++ -c -o LISTENER.o            ../src/actors/LISTENER/LISTENER.cpp         $(Flag) -fPIC
 	g++ -c -o domain.o              ../src/common/domain.cpp                    $(Flag) -fPIC
+	g++ -c -o connection.o          ../src/common/connection.cpp                $(Flag) -fPIC
 	g++ -shared -fPIC -o libLISTENER.so             \
-	     FCgiIO.o domain.o                \
+	     FCgiIO.o domain.o connection.o               \
 	     LISTENER.o -L/usr/lib -lcgicc -lfcgi -lfcgi++ -lnlohmann_json_schema_validator $(Flag)
 
 
@@ -52,8 +53,9 @@ libCONNECTION:
 	g++ -c -o FCgiIO.o              ../src/actors/LISTENER/common/FCgiIO.cpp    $(Flag) -fPIC
 	g++ -c -o CONNECTION.o          ../src/actors/CONNECTION/CONNECTION.cpp -I../vendors/cpp-jwt/include/ $(Flag) -fPIC
 	g++ -c -o domain.o              ../src/common/domain.cpp                    $(Flag) -fPIC
+	g++ -c -o connection.o          ../src/common/connection.cpp                $(Flag) -fPIC
 	g++ -shared -fPIC -o libCONNECTION.so     \
-		FCgiIO.o domain.o  \
+		FCgiIO.o domain.o connection.o \
 	    CONNECTION.o -L/usr/lib -lcgicc -lfcgi -lfcgi++ -lnlohmann_json_schema_validator $(Flag)
 
 

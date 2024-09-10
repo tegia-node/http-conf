@@ -16,7 +16,7 @@ class domain_t
 		domain_t();
 		~domain_t() = default;
 
-		bool auth(connection_t * connection);
+		bool auth(connection_t * connection, const std::string &wsid);
 
 		std::string name;
 		
