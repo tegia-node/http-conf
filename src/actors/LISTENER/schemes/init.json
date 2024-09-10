@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "HTTP config schema",
+	"type": "object",
+	"properties": 
+	{
+		"fcgi":
+		{
+			"type": "object",
+			"properties":
+			{
+				"host":
+				{
+					"type": "string",
+					"description": "Порт, на который приходит fcgi соединение от nginx"
+				},
+				"listen_queue_backlog":
+				{
+					"type": "number",
+					"description": ""
+				}
+			},
+			"required": ["host","listen_queue_backlog"]
+		}
+	},
+	"required": ["fcgi"]
+}

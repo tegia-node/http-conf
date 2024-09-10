@@ -1,6 +1,8 @@
 #ifndef _H_HTTP_MESSAGE_
 #define _H_HTTP_MESSAGE_
 
+#include <tegia/actors/message_t.h>
+
 class A2FCGI;
 
 class message_http: public message_t

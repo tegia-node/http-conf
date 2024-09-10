@@ -9,16 +9,15 @@
 #define ACTOR_TYPE "HTTP::LISTENER"
 
 
-extern "C" tegia::actors::type_base * _load_type()
-{
-	auto actor_type = new tegia::actors::type<HTTP::LISTENER>(ACTOR_TYPE);
+extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
+{	
+	auto type = new tegia::actors::type_t<HTTP::LISTENER>(ACTOR_TYPE);
 
-	ADD_ACTION( "/init",							&HTTP::LISTENER::init);
-	ADD_ACTION( "/application/add",					&HTTP::LISTENER::add_application);
+	ADD_ACTION("/init",       &HTTP::LISTENER::init,       ROLES::SESSION::SYSTEM);
+	ADD_ACTION("/domain/add", &HTTP::LISTENER::add_domain, ROLES::SESSION::SYSTEM);
 
-	return actor_type;
+	return type;
 };
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,19 +41,15 @@ static const unsigned long STDIN_MAX = 1000000;
 
 namespace HTTP {
 
-LISTENER::LISTENER(
-	const std::string &name, 
-	nlohmann::json &data):tegia::actors::actor_base(ACTOR_TYPE, name, data)
-{
 
+LISTENER::LISTENER(const std::string &name): tegia::actors::actor_t(ACTOR_TYPE,name)
+{
 	//
 	// Инициализируем JSON SCHEME VALIDATOR для /init
 	//
 
-	try 
-	{
-		this->validator_init.set_root_schema(
-			R"({
+	auto res = this->_validator_init.load(
+		R"({
 				"$schema": "http://json-schema.org/draft-07/schema#",
 				"title": "HTTP config schema",
 				"type": "object",
@@ -69,47 +64,26 @@ LISTENER::LISTENER(
 							{
 								"type": "string",
 								"description": "Порт, на который приходит fcgi соединение от nginx"
-							}
-						}
-					},
-					"cors":
-					{
-						"type": "object",
-						"properties":
-						{
-							"alloworigin":
-							{
-								"type": "boolean",
-								"description": "Флаг, определяющий формировать ли заголовки для CORS"
-							}
-						},
-						"required": ["alloworigin"]
-					},
-					"cookie":
-					{
-						"type": "object",
-						"properties":
-						{
-							"maxage":
+							},
+							"listen_queue_backlog":
 							{
 								"type": "number",
-								"description": "Время жизни cookie, выставляемое при отправке http-запроса клиенту"
+								"description": ""
 							}
 						},
-						"required": ["maxage"]
+						"required": ["host","listen_queue_backlog"]
 					}
 				},
-				"required": ["cors","cookie"]
-			})"_json
-		);
+				"required": ["fcgi"]
+			})"_json);
+
+	if(res == false)
+	{
+		std::cout << _ERR_TEXT_ << "LOAD _validator_init ERROR" << std::endl;
+		exit(0);
 	}
 
-	catch (const std::exception &e)
-	{
-		std::cout << _ERR_TEXT_ << " Validation config error: " << e.what() << std::endl;
-		std::cout << data.dump() << std::endl;
-		exit(0);
-	}	
+	this->status = 200;
 };
 
 LISTENER::~LISTENER() { };
@@ -125,7 +99,7 @@ LISTENER::~LISTENER() { };
 
 
 #include "actions/init.cpp"
-#include "actions/add_application.cpp"
+#include "actions/add_domain.cpp"
 
 	
 ////////////////////////////////////////////////////////////////////////////////////////////

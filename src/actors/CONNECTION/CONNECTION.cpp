@@ -9,16 +9,17 @@
 #define ACTOR_TYPE "HTTP::CONNECTION"
 
 
-extern "C" tegia::actors::type_base * _load_type()
-{
-	auto actor_type = new tegia::actors::type<HTTP::CONNECTION>(ACTOR_TYPE);
+extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
+{	
+	auto type = new tegia::actors::type_t<HTTP::CONNECTION>(ACTOR_TYPE);
 
-	ADD_ACTION( "/init",							&HTTP::CONNECTION::init);
-	ADD_ACTION( "/response",						&HTTP::CONNECTION::response);
+	ADD_ACTION("/init",     &HTTP::CONNECTION::init,     ROLES::SESSION::SYSTEM);
+	ADD_ACTION("/response", &HTTP::CONNECTION::response, ROLES::SESSION::PUBLIC, ROLES::SESSION::USER);
+	ADD_ACTION("/test/01",  &HTTP::CONNECTION::test_01,  ROLES::SESSION::PUBLIC, ROLES::SESSION::USER);
+	ADD_ACTION("/test/02",  &HTTP::CONNECTION::test_02,  ROLES::SESSION::PUBLIC, ROLES::SESSION::USER);
 
-	return actor_type;
+	return type;
 };
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,11 +30,11 @@ extern "C" tegia::actors::type_base * _load_type()
 
 namespace HTTP {
 
-CONNECTION::CONNECTION(
-	const std::string &name, 
-	nlohmann::json &data):tegia::actors::actor_base(ACTOR_TYPE, name, data)
+
+CONNECTION::CONNECTION(const std::string &name): tegia::actors::actor_t(ACTOR_TYPE,name)
 {
-	
+	this->_validator_http_data.load(tegia::conf::path("http-conf") + "/data/schemas/http_data.json");
+	this->status = 200;
 };
 
 CONNECTION::~CONNECTION() { };
@@ -50,6 +51,7 @@ CONNECTION::~CONNECTION() { };
 
 #include "actions/init.cpp"
 #include "actions/response.cpp"
+#include "actions/test.cpp"
 
 	
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,4 +60,5 @@ CONNECTION::~CONNECTION() { };
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-
+#include "common/route_send.cpp"
+#include "common/route_current.cpp"

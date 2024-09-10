@@ -17,7 +17,8 @@
 	#include "../../common/params.h"
 	#include "../../common/message_http.h"
 	#include "../../common/connection.h"
-	#include "../../common/application.h"
+	#include "../../common/domain.h"
+	#include "../../common/ws.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,37 +27,30 @@
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+
 namespace HTTP {
 
-class LISTENER: public tegia::actors::actor_base
+class LISTENER: public tegia::actors::actor_t
 {	
 	public:
 
-		// ----------------------------------------------------------------------------------   
-		//
-		// ACTION FUNCTIONS
-		//
-		// ----------------------------------------------------------------------------------   
-
-		LISTENER(const std::string &name, nlohmann::json &data); 
+		LISTENER(const std::string &name);
 		~LISTENER();  
 
+		// ----------------------------------------------------------------------------------   
+		// ACTION FUNCTIONS
+		// ----------------------------------------------------------------------------------   
+
 		int init(const std::shared_ptr<message_t> &message);
-		int add_application(const std::shared_ptr<message_t> &message);
+		int add_domain(const std::shared_ptr<message_t> &message);
 
 	private:
 
-		nlohmann::json_schema::json_validator validator_init;
+		tegia::json::validator _validator_init;
 		int listen_socket;
 
-		// хост и порт, которые слушает актор
-		std::string host;
-
-		// максимальное число подключенных соединений
-		int listen_queue_backlog = 0;
-
-		// Множество приложений, которые "обслуживаются" этим актором
-		applications_t apps;
+		domains_t domains;
+		workspaces_t workspaces;
 
 		long long int connections = 0;
 

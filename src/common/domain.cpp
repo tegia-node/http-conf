@@ -1,5 +1,6 @@
-#include "application.h"
+#include "domain.h"
 #include <tegia/app/auth.h>
+#include <tegia/context/context.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -7,7 +8,7 @@
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-application_t::application_t()
+domain_t::domain_t()
 {
 
 };
@@ -20,7 +21,7 @@ application_t::application_t()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool application_t::auth(Connection_t * connection)
+bool domain_t::auth(connection_t * connection, const std::string &wsid)
 {
 	int status = 0;
 	std::string token{};
@@ -42,8 +43,7 @@ bool application_t::auth(Connection_t * connection)
 	{
 		case 0:
 		{
-			// NO AUTH
-			is_auth = false;
+			token = "";
 		}
 		break;
 
@@ -69,18 +69,21 @@ bool application_t::auth(Connection_t * connection)
 
 	if(is_auth == true)
 	{
-		// std::cout << "token = " << token << std::endl;
-
 		// std::cout << "-----------------------------------" << std::endl; 
 		// std::cout << "UNPACK START" << std::endl;
 		// std::cout << "-----------------------------------" << std::endl; 
 
-		std::string pub_key = tegia::auth::key("./jwt_keys/" + this->domain + "/jwtRS256.key.pub");
+		// std::cout << "domain = " << this->name << std::endl;
+		// std::cout << "token  = " << token << std::endl;
+
+		std::string pub_key = tegia::auth::key("./jwt_keys/" + this->name + "/jwtRS256.key.pub");
 		auto jwt = tegia::auth::unpack(token,pub_key);
 
 		// std::cout << "state = " << jwt->status() << std::endl;
+		// std::cout << "tid = " << tegia::context::tid() << std::endl;
 		// jwt->print();
-
+		// tegia::context::user()->print();
+		
 		// std::cout << "-----------------------------------" << std::endl; 
 		// std::cout << "UNPACK END" << std::endl;
 		// std::cout << "-----------------------------------" << std::endl; 

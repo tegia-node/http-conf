@@ -14,12 +14,12 @@
 namespace HTTP {
 
 
-int LISTENER::add_application(const std::shared_ptr<message_t> &message)
+int LISTENER::add_domain(const std::shared_ptr<message_t> &message)
 {
 	int _STATUS_ = 200;
 	/////////////////////////////////////////////////////////////////////////////////////////  
 
-	this->apps.add(message->data);
+	this->domains.add(message->data);
 
 	/////////////////////////////////////////////////////////////////////////////////////////  
 	return _STATUS_;

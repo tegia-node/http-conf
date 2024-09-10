@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "HTTP MESSAGE schema",
+	"type": "object",
+	"properties": 
+	{
+		"ws": 
+		{
+			"description": "Имя workspace",
+			"type": "string"
+		},
+		"route": 
+		{
+			"type": "string"
+		},
+		"data": 
+		{
+			"oneOf": 
+			[
+				{ "type": "object" },
+				{ "type": "array" }
+			]
+		}
+	},
+	"required": ["ws", "route"],
+	"additionalProperties": false
+}

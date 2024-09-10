@@ -1,9 +1,4 @@
-#include "A2Session.h"
-
-#define _public_  true
-#define _private_ false
-
-#pragma comment(lib, "libfcgi.lib")
+#include "WS.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //
@@ -11,20 +6,22 @@
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-#define ACTOR_TYPE "A2Session"
+#define ACTOR_TYPE "HTTP::WS"
 
-extern "C" tegia::actors::router_base * _load_actor()
-{
-	auto ro = new tegia::actors::router<A2Session>(ACTOR_TYPE);
 
-	ACTION_ROUTE2( "/init",					&A2Session::init);
-	ACTION_ROUTE2( "/authorize",			&A2Session::authorize);
-	ACTION_ROUTE2( "/send",					&A2Session::send);
+extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
+{	
+	auto type = new tegia::actors::type_t<HTTP::WS>(ACTOR_TYPE);
 
-	ACTION_ROUTE2( "/test",					&A2Session::test);
+	type->add_action(
+		"/resolve",
+		static_cast<tegia::actors::action_fn_ptr>(&HTTP::WS::resolve),
+		tegia::user::roles(ROLES::SESSION::PUBLIC, ROLES::SESSION::USER)
+	);
 
-	return ro;
+	return type;
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //
@@ -32,36 +29,17 @@ extern "C" tegia::actors::router_base * _load_actor()
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace HTTP {
 
-A2Session::A2Session(
-	const std::string &name, 
-	nlohmann::json data):tegia::actors::actor_base(ACTOR_TYPE, name, data)
+
+WS::WS(const std::string &name): tegia::actors::ws_t(ACTOR_TYPE,name)
 {
-	std::cout << _YELLOW_ << "CREATE ACTOR " << this->name << std::endl;
-
-	this->request = new CRequest();
-
-	//
-	// PUBLIC JWT KEY
-	//
-
-	std::string pub_key_path = std::filesystem::current_path().string() + "/jwtRS256.key.pub";
-	this->jwt_public_key = core::read_from_file(pub_key_path);
-
-	//
-	// HTTP ROUTERS
-	//
-
-	this->http_public_routes.insert("/api/v3/sessions/-/test");
-	this->http_public_routes.insert("/api/v3/auth/vk/-/login/{script}");
-	this->http_public_routes.insert("/api/v3/auth/vk/-/callback");
 	
-}; 
-
-A2Session::~A2Session() 
-{ 
-	delete this->request;
 };
+
+WS::~WS() { };
+
+}	// END namespace HTTP
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,14 +48,14 @@ A2Session::~A2Session()
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "actions/init.cpp"
-#include "actions/send.cpp"
-#include "actions/authorize.cpp"
 
-#include "actions/test.cpp"
+#include "actions/resolve.cpp"
 
+	
 ////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                        //
-// SUPPORT FUNCTIONS                                                                      //
+// COMMON FUNCTIONS                                                                       //
 //                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////
+
+
