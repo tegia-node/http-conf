@@ -1,0 +1,47 @@
+{
+	"name": "http-conf",
+	"path": "%%.paths.root%%/configurations/%%.paths.configuration%%@%%.paths.branch%%",
+	"types":
+	{
+		"HTTP::LISTENER": "/bin/libLISTENER.so",
+		"HTTP::CONNECTION": "/bin/libCONNECTION.so"
+	},
+	"db":
+	{
+		"connections":
+		{
+			"mysql_local":
+			{
+				"type": "mysql",
+				"host" : "%%.mysql.host%%",
+				"password" : "%%.mysql.password%%",
+				"port" : %%.mysql.port%%,
+				"user" : "%%.mysql.user%%"
+			}
+		},
+		"databases":
+		{
+			"http_ws":
+			{
+				"connection": "mysql_local", 
+				"dbname": "tegia.%%.mysql.prefix%%_tegia_ws"
+			}
+		}
+	},	
+	"init":
+	[
+		{
+			"actor": "http/listener",
+			"action": "/init",
+			"data": 
+			{
+				"fcgi":
+				{
+					"host" : "%%.http.host%%",
+					"listen_queue_backlog": %%.http.listen_queue_backlog%%
+				}
+			}
+		}
+	]
+
+}
