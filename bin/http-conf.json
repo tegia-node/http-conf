@@ -1,6 +1,6 @@
 {
 	"name": "http-conf",
-	"path": "%%.paths.root%%/configurations/%%.paths.configuration%%@%%.paths.branch%%",
+	"path": "%%.root%%/configurations/http-conf",
 	"types":
 	{
 		"HTTP::LISTENER": "/bin/libLISTENER.so",
