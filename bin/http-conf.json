@@ -6,6 +6,11 @@
 		"HTTP::LISTENER": "/bin/libLISTENER.so",
 		"HTTP::CONNECTION": "/bin/libCONNECTION.so"
 	},
+	"patterns":
+	{
+		"http/listener": "HTTP::LISTENER",
+		"http/connection/*": "HTTP::CONNECTION"
+	},
 	"db":
 	{
 		"connections":
