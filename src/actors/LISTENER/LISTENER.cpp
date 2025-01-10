@@ -14,7 +14,6 @@ extern "C" tegia::actors::type_base_t * _init_type(const std::string &type_name)
 	auto type = new tegia::actors::type_t<HTTP::LISTENER>(ACTOR_TYPE);
 
 	ADD_ACTION("/init",       &HTTP::LISTENER::init,       ROLES::SESSION::SYSTEM);
-	ADD_ACTION("/unload",     &HTTP::LISTENER::unload,     ROLES::SESSION::PUBLIC, ROLES::SESSION::USER);
 	ADD_ACTION("/domain/add", &HTTP::LISTENER::add_domain, ROLES::SESSION::SYSTEM);
 
 	return type;
@@ -100,7 +99,6 @@ LISTENER::~LISTENER() { };
 
 
 #include "actions/init.cpp"
-#include "actions/unload.cpp"
 #include "actions/add_domain.cpp"
 
 	

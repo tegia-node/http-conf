@@ -42,7 +42,6 @@ class LISTENER: public tegia::actors::actor_t
 		// ----------------------------------------------------------------------------------   
 
 		int init(const std::shared_ptr<message_t> &message);
-		int unload(const std::shared_ptr<message_t> &message);
 		int add_domain(const std::shared_ptr<message_t> &message);
 
 	private:
