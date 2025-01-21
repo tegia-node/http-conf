@@ -144,7 +144,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					"Content-Type: application/json; charset=utf-8\r\n"
 					"Cache-Control: no-cache\r\n" +
 					message->http["response"]["header"].get<std::string>() +
-					"\r\n{}\r\n";
+					"\r\n" +
+					message->data.dump() +
+					"\r\n";
 			
 			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
@@ -167,7 +169,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					"Content-Type: application/json; charset=utf-8\r\n"
 					"Cache-Control: no-cache\r\n" +
 					message->http["response"]["header"].get<std::string>() +
-					"\r\n{}\r\n";
+					"\r\n" +
+					message->data.dump() +
+					"\r\n";
 			
 			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
@@ -191,7 +195,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					"Content-Type: application/json; charset=utf-8\r\n"
 					"Cache-Control: no-cache\r\n" +
 					message->http["response"]["header"].get<std::string>() +
-					"\r\n{}\r\n";
+					"\r\n" +
+					message->data.dump() +
+					"\r\n";
 			
 			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
@@ -216,7 +222,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					"Content-Type: application/json; charset=utf-8\r\n"
 					"Cache-Control: no-cache\r\n" +
 					message->http["response"]["header"].get<std::string>() +
-					"\r\n{}\r\n";
+					"\r\n" +
+					message->data.dump() +
+					"\r\n";
 			
 			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 
@@ -241,7 +249,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 					"Content-Type: application/json; charset=utf-8\r\n"
 					"Cache-Control: no-cache\r\n" +
 					message->http["response"]["header"].get<std::string>() +
-					"\r\n{}\r\n";
+					"\r\n" +
+					message->data.dump() +
+					"\r\n";
 			
 			LDEBUG("CONNECTION " + this->name + "\n\n" + this->connection->content);
 			
