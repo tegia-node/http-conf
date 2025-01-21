@@ -82,7 +82,7 @@ bool domain_t::auth(connection_t * connection, const std::string &wsid)
 		// std::cout << "state = " << jwt->status() << std::endl;
 		// std::cout << "tid = " << tegia::context::tid() << std::endl;
 		// jwt->print();
-		// tegia::context::user()->print();
+		// tegia::threads::user()->print();
 		
 		// std::cout << "-----------------------------------" << std::endl; 
 		// std::cout << "UNPACK END" << std::endl;

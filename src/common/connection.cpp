@@ -166,7 +166,7 @@ bool connection_t::init(const std::string &name)
 		char *buff = new char[content_length+1]{};
 		FCGX_GetStr(buff,content_length+1,this->req->in);
 		std::string post = std::string(buff, content_length);
-		delete buff;
+		delete[] buff;
 
 		#if _LOG_LEVEL_ == _LOG_DEBUG_
 		{
