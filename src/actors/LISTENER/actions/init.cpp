@@ -1,3 +1,5 @@
+#include "../LISTENER.h"
+
 #undef _LOG_LEVEL_
 #define _LOG_LEVEL_ _LOG_NOTICE_
 #include <tegia/context/log.h>
