@@ -1,8 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////////////////
+#include "../CONNECTION.h"
+
+///
 #undef _LOG_LEVEL_
 #define _LOG_LEVEL_ _LOG_DEBUG_
 #include <tegia/context/log.h>
-////////////////////////////////////////////////////////////////////////////////////////////
+///
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +87,9 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 	*/
 
 	// message->data["http"]["response"]["data"]["request"] = this->connection->json();
+
+	message->data["connection"] = this->name;
+	message->callback.add("http/listener","/unload");
 
 	std::string cookie = "";
 

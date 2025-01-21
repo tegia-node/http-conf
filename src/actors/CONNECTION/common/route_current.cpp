@@ -7,7 +7,7 @@ int CONNECTION::route_current(const std::shared_ptr<message_http_t> &message)
 {
 	this->domain->auth(this->connection,"");
 
-	auto user = tegia::context::user();
+	auto user = tegia::threads::user();
 
 	if(user->check(ROLES::SESSION::PUBLIC) == true)
 	{

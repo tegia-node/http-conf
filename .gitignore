@@ -3,6 +3,7 @@
 /bin/*.o
 /bin/*.so
 /bin/*.deb
-/bin/http.config.json
+
+/db/flyway.conf
 
 /vendors
