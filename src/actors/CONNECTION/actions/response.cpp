@@ -88,7 +88,6 @@ int CONNECTION::response(const std::shared_ptr<message_t> &message)
 
 	// message->data["http"]["response"]["data"]["request"] = this->connection->json();
 
-	message->data["connection"] = this->name;
 	message->callback.add("http/listener","/unload");
 
 	std::string cookie = "";

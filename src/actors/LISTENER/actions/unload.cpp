@@ -27,7 +27,7 @@ int LISTENER::unload(const std::shared_ptr<message_t> &message)
 
 	std::cout << message->data << std::endl;
 
-	tegia::actors::unload(message->data["connection"].get<std::string>());
+	tegia::actors::unload(this->name);
 
 	/////////////////////////////////////////////////////////////////////////////////////////  
 	return 200;
