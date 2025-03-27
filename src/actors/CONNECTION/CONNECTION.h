@@ -66,6 +66,7 @@ class CONNECTION: public tegia::actors::actor_t
 
 		int route_send(const std::shared_ptr<message_http_t> &message);
 		int route_current(const std::shared_ptr<message_http_t> &message);
+		int route_jwt_public_key(const std::shared_ptr<message_http_t> &message);
 
 		int response_200(const std::shared_ptr<message_t> &message);
 

@@ -17,6 +17,7 @@ class domain_t
 		~domain_t() = default;
 
 		bool auth(connection_t * connection, const std::string &wsid);
+		std::string jwt_public_key();
 
 		std::string name;
 		

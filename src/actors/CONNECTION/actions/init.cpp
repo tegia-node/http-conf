@@ -62,6 +62,16 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	}
 
 	//
+	// [ /api/jwt/key ]
+	//
+
+	if("/api/jwt/key" == this->connection->script_name)
+	{
+		return this->route_jwt_public_key(msg);
+	}
+
+
+	//
 	// [ /api/current ]
 	//
 
