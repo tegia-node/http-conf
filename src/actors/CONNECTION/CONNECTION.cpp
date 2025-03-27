@@ -62,3 +62,5 @@ CONNECTION::~CONNECTION() { };
 
 #include "common/route_send.cpp"
 #include "common/route_current.cpp"
+#include "common/route_jwt_public_key.cpp"
+
