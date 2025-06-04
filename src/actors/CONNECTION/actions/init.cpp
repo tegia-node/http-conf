@@ -36,6 +36,15 @@ int CONNECTION::init(const std::shared_ptr<message_t> &message)
 	this->connection->init(this->name);	
 
 	//
+	// CORS
+	//
+
+	
+	// std::cout << this->connection->request_method << std::endl;
+	// exit(0);
+
+	
+	//
 	// FOUND DOMAIN
 	//
 
